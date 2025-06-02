@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'user model.dart';
+
 class ProductDetailPage extends StatelessWidget {
   final Userss product;
 
@@ -12,82 +13,124 @@ class ProductDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.itemname,style:   TextStyle(color: Colors.white), ),
+        title: Text("Product Details", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.favorite_border, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Added to Favourites")),
+              );
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Chat feature coming soon!")),
+          );
+        },
+        icon: Icon(Icons.chat, color: Colors.white,),
+        label: Text("Chat", style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.teal,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image.memory(image, fit: BoxFit.cover, width: double.infinity, height: 250),
-            Padding(
+      body: Column(
+        children: [
+          Image.memory(
+            image,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: 250,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.itemname, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
+                  /// Title & Price
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          product.itemname,
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
 
-                  Text("City: ${product.city}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  Text("Condition: ${product.condition}/10", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                      children: [
-                        TextSpan(text: "Description: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: product.descripton),
-                      ],
-                    ),
+                  /// Location & Condition
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, size: 20, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        product.city,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Spacer(),
+                      Text(
+                        "Condition: ${product.condition}/10",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  Divider(height: 30, thickness: 1),
+
+                  /// Description
+                  Text(
+                    "Description",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    product.descripton,
+                    style: TextStyle(fontSize: 16, height: 1.5),
                   ),
                   SizedBox(height: 30),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.chat,color: Colors.white,),
-                    label: Text("Chat",),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors. blueGrey,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      textStyle: TextStyle(fontSize: 16),
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Chat feature coming soon!"))
-                      );
-                    },
-                  ),
-                  SizedBox(height: 30,),
-                  Center(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                      children: [
-                       ElevatedButton( onPressed: () {}, child: Text("Buy Now"),
+
+                  /// Buy or Borrow Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.shopping_cart, color: Colors.white,),
+                        label: Text("Buy Now" , style: TextStyle(color: Colors.white),),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.teal,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                           textStyle: TextStyle(fontSize: 16),
                         ),
                       ),
-                        Text("   or   "),
-                        ElevatedButton( onPressed: () {}, child: Text("Borrow"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-                            textStyle: TextStyle(fontSize: 16),
-                          ),
+                      SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.book_outlined, color: Colors.white,),
+                        label: Text("Borrow", style: TextStyle(color: Colors.white),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                          textStyle: TextStyle(fontSize: 16),
                         ),
-                       ]
-                    ),
-                  )
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
