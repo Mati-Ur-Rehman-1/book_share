@@ -1,6 +1,8 @@
+import 'package:book_share/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:book_share/login.dart';
+import 'package:book_share/main_navigation.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -24,9 +26,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-      //home: MainNavigation(),
-      //home: ProductInventory(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/manageProfile': (context) => ManageProfileScreen(),
+        '/main': (context) => MainNavigation(),
+      },
     );
   }
 }

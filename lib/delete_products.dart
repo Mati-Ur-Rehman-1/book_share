@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'user model.dart';
 import 'add_items.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DeleteProductsPage extends StatefulWidget {
   const DeleteProductsPage({Key? key}) : super(key: key);
@@ -22,15 +23,21 @@ class _DeleteProductsPageState extends State<DeleteProductsPage> {
     _listenToProducts();
   }
 
-  void _listenToProducts() {
+  void _listenToProducts() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
     _ref.onValue.listen((event) {
       final data = event.snapshot.value;
       List<MapEntry<String, Userss>> loaded = [];
 
       if (data != null && data is Map) {
         data.forEach((key, value) {
-          final user = Userss.fromMap(Map<String, dynamic>.from(value));
-          loaded.add(MapEntry(key, user));
+          final item = Map<String, dynamic>.from(value);
+          if (item['userId'] == currentUser.uid) {
+            final user = Userss.fromMap(item);
+            loaded.add(MapEntry(key, user));
+          }
         });
       }
 
@@ -39,6 +46,7 @@ class _DeleteProductsPageState extends State<DeleteProductsPage> {
       });
     });
   }
+
 
   void _deleteProduct(String key) {
     _ref.child(key).remove().then((_) {

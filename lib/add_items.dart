@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:book_share/main_navigation.dart';
 import 'user model.dart';
-import 'delete_products.dart';
 
 
 class AddItemPage extends StatefulWidget {
@@ -31,8 +31,8 @@ class _AddItemPageState extends State<AddItemPage> {
 
   final itemName = TextEditingController();
   final descripton = TextEditingController();
-   final category = TextEditingController();
-   final condition = TextEditingController();
+  final category = TextEditingController();
+  final condition = TextEditingController();
   final city = TextEditingController();
 
 
@@ -46,12 +46,14 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
   void _saveToDatabase() async {
-    String uid = _database.push().key.toString();
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final String productKey = _database.push().key!;
 
 
     if(widget.entry!=null){
       final user = Userss(
-        uid: uid,
+        userId: uid,
+        pid: productKey,
         itemname: itemName.text,
         descripton: descripton.text,
         category: category.text,
@@ -59,23 +61,24 @@ class _AddItemPageState extends State<AddItemPage> {
         city: city.text,
         image: _base64Image ?? "",
       );
-      await _database.child('products').child(widget.entry!.uid).set(user.toMap()).then((_){
+      await _database.child('products').child(productKey).set(user.toMap()).then((_){
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data Updated')));
       });
 
     }else{
       try {
         final user = Userss(
-          uid: uid,
+          userId: uid,
+          pid: productKey,
           itemname: itemName.text,
           descripton: descripton.text,
-           category: selectedCategory!,
-           condition: selectedCondtion!,
+          category: selectedCategory!,
+          condition: selectedCondtion!,
           city: city.text,
           image: _base64Image ?? "",
         );
 
-        await _database.child('products').child(uid).set(user.toMap());
+        await _database.child('products').child(productKey).set(user.toMap());
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Product saved successfully!")),
@@ -187,27 +190,27 @@ class _AddItemPageState extends State<AddItemPage> {
               ),
             ),
 
-      Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: DropdownButtonFormField<String>(
-        value: selectedCategory,
-        decoration: InputDecoration(
-          labelText: 'Category',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        items: ['English', 'Poetry', 'Novel'].map((String category) {
-          return DropdownMenuItem<String>(
-            value: category,
-            child: Text(category),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedCategory = newValue!;
-          });
-        },
-      ),
-    ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: DropdownButtonFormField<String>(
+                value: selectedCategory,
+                decoration: InputDecoration(
+                  labelText: 'Category',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                items: ['English', 'Poetry', 'Novel'].map((String category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedCategory = newValue!;
+                  });
+                },
+              ),
+            ),
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -248,6 +251,7 @@ class _AddItemPageState extends State<AddItemPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _saveToDatabase,
+
         label: const Text("Save",style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold) ,),
         icon: const Icon(Icons.save_outlined,color: Colors.white,),
         backgroundColor: Colors.teal,
@@ -257,5 +261,3 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
 }
-
-
