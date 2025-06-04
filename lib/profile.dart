@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 
 class ManageProfileScreen extends StatefulWidget {
   @override
@@ -10,7 +8,7 @@ class ManageProfileScreen extends StatefulWidget {
 }
 
 class _ManageProfileScreenState extends State<ManageProfileScreen> {
-   final String userName = "John Doe";
+  final String userName = "John Doe";
   final String userEmail = "john.doe@example.com";
   final String userAddress = "123 Main Street, City";
 
@@ -51,15 +49,8 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
       "${place.locality}, ${place.administrativeArea}, ${place.country}";
     });
   }
-   void _logout() async {
-     await FirebaseAuth.instance.signOut();
-     Navigator.pushReplacementNamed(context, '/login');
-   }
 
-
-
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -143,7 +134,7 @@ class _ManageProfileScreenState extends State<ManageProfileScreen> {
               text: "Logout",
               icon: Icons.logout,
               color: Color(0xFF475569),
-              onTap: _logout,
+              onTap: () {},
             ),
             const SizedBox(height: 16),
             _buildActionButton(
